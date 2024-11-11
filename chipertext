@@ -1,0 +1,125 @@
+# Codingan enkripsi dan decripsi
+def Encryption(plaintext, key_val): #Fauzan, 2
+    ciphertext = ''
+    for i in range(len(plaintext)): 
+        special = plaintext[i] #Berguna untuk mengambil satu satu kata dari awal (F a u z a n) = di perulangan dari index 0(F dahulu)
+        new_special = special.lower()
+        if new_special == " ":
+            ciphertext += ' '
+        elif special.isalpha():
+            ciphertext += chr((ord(new_special) + key_val - 97) % 26 + 97) 
+            # berguna untuk menghilangkan nila desimal
+            # huruf ascii lowercase awal dari 97 = a
+            # konsepnya (kita ubah string jadi ascii + nilai key - 97)kita modulus dengan total alfabet 26 dan ditambah 97
+            # a kita shift 2 = contoh ord(97) + 2 - 97 = 2 % 26 = 2 + 99 = chr(99) => adalah c
+
+    return ciphertext
+
+
+def Decryption(ciphertext, key_val):
+    plaintext = ''
+    for i in range(len(ciphertext)):
+        special = ciphertext[i]
+        new_special = special.lower()
+        if new_special == " ":
+            plaintext += ' '
+        elif special.isalpha():
+            plaintext += chr((ord(new_special) - key_val - 97) % 26 + 97)
+    return plaintext
+
+def caesar_brute_force(ciphertext):
+    decrypted_messages = []
+    for key in range(26):  # Try all possible keys
+        decrypted_message = ""
+        for char in ciphertext:
+            if char.isalpha():
+                ascii_offset = 65 if char.isupper() else 97
+                decrypted_char = chr((ord(char) - ascii_offset - key) % 26 + ascii_offset)
+                decrypted_message += decrypted_char
+            else:
+                decrypted_message += char
+        decrypted_messages.append(decrypted_message)
+    return decrypted_messages
+
+def contains_common_words(text):
+    common_words = ["saya", "kamu", "dia", "kita", "mereka", "bisa", "sudah", "tidak", "jangan",
+    "bagaimana", "apa", "aku", "kamu", "kalian", "ini", "itu", "makan", "minum",
+    "belajar", "sekolah", "rumah", "teman", "keluarga", "cinta", "bahagia", "sedih",
+    "senang", "hujan", "panas", "dingin", "hari", "bulan", "tahun", "pagi", "siang",
+    "malam", "buku", "pensil", "pulpen", "komputer", "handphone", "sepeda", "mobil",
+    "motor", "laut", "gunung", "sungai", "pantai", "hutan", "bunga", "buah", "sayur",
+    "makanan", "minuman", "olahraga", "musik", "film", "seni", "bahasa", "angka",
+    "warna", "negara", "kota", "desa", "pasar", "restoran", "rumah sakit", "sekretaris",
+    "guru","dan", "atau", "juga", "serta", "tetapi", "namun", "melainkan", "sebaliknya", 
+    "karena", "sebab", "oleh karena itu", "sehingga", "agar", "supaya", "jika", 
+    "kalau", "seandainya", "meskipun", "walaupun", "sekalipun", "kemudian", "lalu", 
+    "setelah", "sebelum", "selagi", "selama", "hingga", "sampai", "serta", "sambil",
+    "seakan", "seolah-olah", "padahal", "demi", "terhadap", "tentang", "di", "dalam",
+    "ke", "dari", "pada", "untuk", "oleh", "dengan", "tanpa","attitude","everything","saya", "aku", "kamu", "dia", "mereka", "kami", "kita", "anda", "ia", "diri",
+    "orang", "teman", "guru", "dokter", "polisi", "anak", "ayah", "ibu", "kakek", "nenek",
+    "paman", "bibi", "saudara", "siswa", "mahasiswa", "karyawan", "pekerja", "warga"]
+    for word in common_words:
+        if word in text.lower():
+            return True
+    return False
+
+# Codingan Inputan
+while True:
+    print(
+        'CAESAR CHIPER CRYPTOGRAPY\n [*] ketik 1 untuk Enkripsi \n [*] Ketik 2 Untuk Dekripsi \n [*] Ketik 3 Untuk Bruteforce \n [*] Ketik 00 Untuk Membatalkan ')
+    print('Tip ---> Encryption/Decryption with shift value of your choice ! ')
+    choice = input('Insert Here : ')
+    if choice.isdigit():
+        if choice == '1':
+            sen = input('Masukkan plaintext : ')
+            key = int(input('Insert shift value(HANYA INTEGER) : '))
+            print(50 * '-')
+            print(f'Your ciphertext ---> {Encryption(sen, key)}')
+            print(50 * '-')
+            print('Special symbols (!,# etc and numbers) are deleted..')
+            con = input('Apakah dilanjut lagi ? [Any Key/no]')
+            if con == 'no':
+                print('TERIMAKASIH :)')
+                break
+            else:
+                pass
+        elif choice == '2':
+            csen = input('Masukkan ciphertext : ')
+            key = int(input('Insert shift value(HANYA INTEGER)'))
+            print(50 * '-')
+            print(f'Your plaintext ---> {Decryption(csen, key)}')
+            print(50 * '-')
+            print('Special symbols (!,# etc and numbers) are deleted..')
+            con = input('Apakah dilanjut lagi ? [Any Key/no]')
+            if con == 'no':
+                print('TERIMAKASIH :)')
+                break
+            else:
+                pass
+        elif choice == '3':
+            csen = input('Masukkan ciphertext : ')
+            print(50 * '-')
+            for key, decrypted_message in enumerate(caesar_brute_force(csen)):
+                print(f"Key: {key}\tPlaintext: {decrypted_message}")
+            print(50 * '-')
+            print(50 * '-')       
+            best_match = ""
+            for decrypted_message in caesar_brute_force(csen):
+                if contains_common_words(decrypted_message):
+                    best_match = decrypted_message
+                    break
+            print(f"Decrypted message (Hasil terbaik): {best_match}")
+            print(50 * '-')
+            print('Special symbols (!,# etc and numbers) are deleted..')
+            con = input('Apakah dilanjut lagi ? [Any Key/no] ')
+            if con == 'no':
+                print('TERIMAKASIH :)')
+                break
+            else:
+                pass
+        elif choice == '00':
+            print('Exiting..')
+            break
+        else:
+            print('Code eror .. \n'
+                  'Please insert 0 or 1 ')
